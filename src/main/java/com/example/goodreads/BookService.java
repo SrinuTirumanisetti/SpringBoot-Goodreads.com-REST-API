@@ -2,6 +2,8 @@ package com.example.goodreads;
 
 import java.util.*;
 import com.example.goodreads.BookRepository;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 public class BookService implements BookRepository {
     private HashMap<Integer, Book> hmap = new HashMap<>();
@@ -20,8 +22,12 @@ public class BookService implements BookRepository {
         return books;
     }
     @Override
-    public Book getBookById(int bookId){
+    public Book getBookById(int bookId) {
         Book book = hmap.get(bookId);
+        if (book == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         return book;
     }
+
 }
