@@ -1,5 +1,5 @@
 package com.example.goodreads;
-
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,4 +15,9 @@ public class BookController {
     public ArrayList<Book> getBooks() {
         return bookService.getBooks();
     }
-}
+    
+    @GetMapping("/books/{bookId}")
+    public Book getBookByBookId(@PathVariable("bookId") int bookId){
+        return bookService.getBookById(bookId);
+    }
+}   
