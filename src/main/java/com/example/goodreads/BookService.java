@@ -1,12 +1,15 @@
 package com.example.goodreads;
 
-import java.util.*;
-import com.example.goodreads.BookRepository;
-import org.springframework.web.server.ResponseStatusException;
+import com.example.goodreads.Book;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+import java.util.*;
+
 
 public class BookService implements BookRepository {
     private HashMap<Integer, Book> hmap = new HashMap<>();
+    int uniqueBookId = 3;
 
     public BookService() {
         Book b1 = new Book(1, "harry potter","harry_potter.jpg");
@@ -16,18 +19,59 @@ public class BookService implements BookRepository {
     }
 
     @Override
+    public void deleteBook(int bookId){
+        Book book=hmap.get(bookId);
+
+        if(book == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        else{
+            hmap.remove(bookId);
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+        }
+    }
+
+    @Override
+    public Book updateBook(int bookId, Book book) {
+        Book existingBook=hmap.get(bookId);
+        if(existingBook == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        if (book.getName() != null) {
+            existingBook.setName(book.getName());
+        }
+        
+        if (book.getImageUrl() != null) {
+            existingBook.setImageUrl(book.getImageUrl());
+        }
+        return existingBook;
+    }
+
+    @Override
+    public Book addBook(Book book) {
+        book.setId(uniqueBookId);
+        hmap.put(uniqueBookId, book);
+        uniqueBookId += 1;
+
+        return book;
+    }
+
+    @Override
     public ArrayList<Book> getBooks() {
         Collection<Book> bookCollection = hmap.values();
         ArrayList<Book> books = new ArrayList<>(bookCollection);
         return books;
     }
+
     @Override
     public Book getBookById(int bookId) {
         Book book = hmap.get(bookId);
-        if (book == null) {
+
+        if(book == null ){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return book;
     }
-
 }

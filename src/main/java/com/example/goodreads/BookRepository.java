@@ -3,6 +3,9 @@ package com.example.goodreads;
 import java.util.ArrayList;
 
 public interface BookRepository {
-    ArrayList<Book> getBooks();
-    Book getBookById(int bookId); 
+    public ArrayList<Book> getBooks();
+    public Book getBookById(int bookId);
+    public Book addBook(Book book);
+    public Book updateBook(int bookId, Book book);
+    public void deleteBook(int bookId);
 }
