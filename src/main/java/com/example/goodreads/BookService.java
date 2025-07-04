@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public class BookService implements BookRepository {
     private HashMap<Integer, Book> hmap = new HashMap<>();
     int uniqueBookId = 3;
+
     public BookService() {
         Book b1 = new Book(1, "harry potter", "harry_potter.jpg");
         Book b2 = new Book(2, "Rise", "rise.jpeg");
@@ -21,7 +22,6 @@ public class BookService implements BookRepository {
         Collection<Book> bookCollection = hmap.values();
         ArrayList<Book> books = new ArrayList<>(bookCollection);
         return books;
-
     }
 
     @Override
@@ -31,14 +31,42 @@ public class BookService implements BookRepository {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return book;
-
     }
 
     @Override
-    public Book addBook(Book book){
+    public Book addBook(Book book) {
         book.setId(uniqueBookId);
-        hmap.put(uniqueBookId,book);
-        uniqueBookId +=1;
+        hmap.put(uniqueBookId, book);
+        uniqueBookId += 1;
         return book;
+    }
+
+    @Override
+    public Book updateBook(int bookId, Book book) {
+        Book existingBook = hmap.get(bookId);
+        if (existingBook == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        if (book.getName() != null) {
+            existingBook.setName(book.getName());
+        }
+
+        if (book.getImageUrl() != null) {
+            existingBook.setImageUrl(book.getImageUrl());
+        }
+
+        return existingBook;
+    }
+
+    @Override
+    public void deleteBook(int bookId) {
+        Book book = hmap.get(bookId);
+        if (book == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } else {
+            hmap.remove(bookId);
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+        }
     }
 }
